@@ -10,10 +10,14 @@ app.get('/hello-world', function(req, res) {
     res.render('hello-gif', {gifUrl: gifUrl}); // Renders html template img tag in the template
 });
 
+app.get('/', function(req, res) {
+    res.render('home')
+});
+
 app.get('/greetings/:name/', function(req,res) {
     var name = req.params.name
     res.render('greetings', {name:name})
-})
+});
 app.listen(3000, function () {
     // Listen on port 3000
   console.log('Gif Search listening on port localhost:3000!');
