@@ -16,8 +16,9 @@ app.get('/hello-world', function(req, res) {
     }); // Renders html template img tag in the template
 });
 
-app.get('/:queryString', function(req, res) {
-    var queryString = req.params.queryString
+app.get('/', function(req, res) {
+    var queryString = req.query.term
+    console.log(queryString)
 
     // Now enocode the query string as an uri component to remove whitespaces and extra characters
     var term = encodeURIComponent(queryString)
