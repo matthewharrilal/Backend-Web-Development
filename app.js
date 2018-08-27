@@ -1,24 +1,52 @@
 var express = require('express');
 var app = express();
 var exphbs = require('express-handlebars')
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.engine('handlebars', exphbs({
+    defaultLayout: 'main'
+}));
 app.set('view engine', 'handlebars');
+var http = require('http'); // Using the http module
+
 
 app.get('/hello-world', function(req, res) {
     // Get request to the /hello-world route
     var gifUrl = 'http://media2.giphy.com/media/gYBVM1igrlzH2/giphy.gif'
-    res.render('hello-gif', {gifUrl: gifUrl}); // Renders html template img tag in the template
+    res.render('hello-gif', {
+        gifUrl: gifUrl
+    }); // Renders html template img tag in the template
 });
 
 app.get('/', function(req, res) {
-    res.render('home')
+    var queryString = 'funny cat'
+
+    // Now enocode the query string as an uri component to remove whitespaces and extra characters
+    var term = encodeURIComponent(queryString)
+    // PUT THE SEARCH TERM INTO THE GIPHY API SEARCH URL
+    var url = 'http://api.giphy.com/v1/gifs/search?q=' + term + '&api_key=dc6zaTOxFJmzC'
+
+    // Making the http request
+    http.get(url, function(response) {
+        // Set encoding of response to utf 8
+        var body = '';
+        response.on('data', function(d) { // When you get the data
+            // Continously update body with data from giphy
+            body += d
+        });
+
+        response.on('end', function() {  // When the data is fully recieved
+            var parsed = JSON.parse(body) // Convert data into JSON
+            res.render('home', {gifs: parsed.data})
+        });
+    });
 });
 
-app.get('/greetings/:name/', function(req,res) {
+app.get('/greetings/:name/', function(req, res) {
     var name = req.params.name
-    res.render('greetings', {name:name})
+    res.render('greetings', {
+        name: name
+    })
 });
-app.listen(3000, function () {
+app.listen(3000, function() {
     // Listen on port 3000
-  console.log('Gif Search listening on port localhost:3000!');
+    console.log('Gif Search listening on port localhost:3000!');
 });
