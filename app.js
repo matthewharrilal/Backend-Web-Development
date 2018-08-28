@@ -5,8 +5,9 @@ app.engine('handlebars', exphbs({
     defaultLayout: 'main'
 }));
 app.set('view engine', 'handlebars');
-var http = require('http'); // Using the http module
 
+var http = require('http');
+app.use(express.static('public'));
 
 app.get('/hello-world', function(req, res) {
     // Get request to the /hello-world route
